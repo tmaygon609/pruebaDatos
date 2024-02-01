@@ -1,0 +1,16 @@
+ul li {
+    display: inline-block;
+  margin: 0 1em;
+  padding: 0.25em 0.5em;
+  border: 2px solid #fff261;
+  border-radius: 3px;
+  transition: all 0.2s ease-in-out;
+}
+
+ul li:hover {
+  background: #fff261;
+}
+
+ul li a:hover {
+  color: #000000;
+}

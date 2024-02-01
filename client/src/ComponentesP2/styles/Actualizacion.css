@@ -1,0 +1,19 @@
+h1 {
+    color: rgb(38, 18, 152);
+}
+
+.table th {
+    color: rgb(38, 18, 152);
+}
+
+.th-nombre {
+    width: 200px;
+}
+
+.th-apellidos {
+    width: 200px;
+}
+
+.th-editar {
+    width: 100px;
+}
