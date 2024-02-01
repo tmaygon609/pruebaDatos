@@ -1,5 +1,4 @@
 const express = require('express');
-const mysql = require('mysql');
 const cors = require('cors');
 
 const app = express();
@@ -7,23 +6,6 @@ const port = 3001;
 
 app.use(express.json());
 app.use(cors());
-
-// Configuración de la conexión a la base de datos
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'user',
-    password: 'user',
-    database: 'axios'
-});
-
-// Conectar a la base de datos
-db.connect((err) => {
-    if (err) {
-        console.error('Error al conectar a la base de datos: ' + err.message);
-    } else {
-        console.log('Conexión exitosa a la base de datos');
-    }
-});
 
 // Rutas
 app.get('/', (req, res) => {
