@@ -7,9 +7,13 @@ var con = createConnection({
     database: "almudeyne"
 });
 
-con.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
+// Conectar a la base de datos
+db.connect((err) => {
+    if (err) {
+        console.error('Error al conectar a la base de datos: ' + err.message);
+    } else {
+        console.log('Conexión exitosa a la base de datos');
+    }
 });
 
 export default con;
