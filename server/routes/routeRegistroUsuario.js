@@ -3,11 +3,6 @@ const express = require('express');
 
 const app = express.Router();
 
-// Rutas
-app.get('/', (req, res) => {
-    res.send('¡Hola desde el servidor!');
-});
-
 // Ejemplo de ruta con consulta a la base de datos
 app.get('/usuarios', (req, res) => {
     const sql = 'SELECT * FROM usuarios';
@@ -37,8 +32,6 @@ app.post('/usuario', (req, res) => {
             res.json({ mensaje: 'Usuario registrado correctamente' });
         }
     });
-
-    res.json({ mensaje: 'Usuario registrado correctamente.' })
 });
 
-export default app; 
+module.exports = app;
