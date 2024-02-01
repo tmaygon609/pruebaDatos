@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const RegistrarUsuarioForm = () => {
   // Estado para almacenar los datos del formulario
@@ -29,10 +30,19 @@ const RegistrarUsuarioForm = () => {
   };
 
   // Función que se ejecuta cuando se envía el formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Luego meteremos los datos en la bbdd 
-    console.log('Formulario enviado:', formData);
+
+    try {
+      // Realizar una solicitud POST al servidor
+      const response = await axios.post('http://localhost:3001/usuario', formData);
+
+      // Manejar la respuesta del servidor según tus necesidades
+      console.log('Respuesta del servidor:', response.data);
+    } catch (error) {
+      // Manejar errores de la solicitud al servidor
+      console.error('Error al enviar datos al servidor:', error.message);
+    }
   };
 
   // Función que se ejecuta cuando se selecciona un campo
