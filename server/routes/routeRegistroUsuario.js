@@ -41,3 +41,4 @@ app.post('/usuario', (req, res) => {
     res.json({ mensaje: 'Usuario registrado correctamente.' })
 });
 
+export default app; 
