@@ -1,4 +1,4 @@
-import db from './conexion';
+import db from './conexion.js';
 
 const express = require('express');
 const cors = require('cors');
