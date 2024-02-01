@@ -1,6 +1,6 @@
 import { createConnection } from 'mysql';
 
-var con = createConnection({
+var db = createConnection({
     host: "localhost",
     user: "user",
     password: "user",
@@ -16,4 +16,4 @@ db.connect((err) => {
     }
 });
 
-export default con;
+export default db;
