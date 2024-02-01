@@ -1,7 +1,7 @@
-import db from './conexion.js';
+const db = require('./conexion.js');
 
-import express from 'express';
-import cors from 'cors';
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
 const port = 3001;
