@@ -39,7 +39,7 @@ app.post('/usuario', (req, res) => {
                 const values = [nombre, apellidos, departamento, usuario, password];
 
                 db.query(insertarUsuarioSql, values, (insertErr) => {
-                    if (err) {
+                    if (insertErr) {
                         console.log('Error al insertar datos: ' + insertErr.message);
                         res.status(500).json({ error: 'Error interno del servidor' });
                     } else {
