@@ -2,7 +2,8 @@
 const express = require('express');
 const cors = require('cors');
 //Nuestras rutas
-// const routeActualizarUsuario = require('./routes/routeActualizarUsuario.js');
+//Ya implementado
+const routeActualizarUsuario = require('./routes/routeActualizarUsuario.js');
 // const routeAñadirUsuario = require('./routes/routeAñadirUsuario.js');
 // const routeEliminarUsuario = require('./routes/routeEliminarUsuario.js');
 // const routeLoginUsuario = require('./routes/routeLoginUsuario.js');
@@ -16,7 +17,8 @@ const port = 3001;
 app.use(express.json());
 app.use(cors());
 //Llamada a nuestras rutas
-// app.use('/', routeActualizarUsuario);
+//Ya implementado
+app.use('/', routeActualizarUsuario);
 // app.use('/', routeAñadirUsuario);
 // app.use('/', routeEliminarUsuario);
 // app.use('/', routeLoginUsuario);
