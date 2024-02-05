@@ -16,6 +16,7 @@ function Actualizacion() {
         console.error('Error al obtener los datos de los alumnos:', error);
         setErrors({ message: 'Error al obtener los datos de los alumnos' });
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // El array vacío como segundo argumento significa que este efecto se ejecutará solo una vez, al montar el componente
 
   const handleEdit = (id) => {
