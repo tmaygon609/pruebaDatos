@@ -39,9 +39,20 @@ const RegistrarUsuarioForm = () => {
 
       // Manejar la respuesta del servidor según tus necesidades
       console.log('Respuesta del servidor:', response.data);
+
+      // Limpiar el formulario después de un registro exitoso
+      setFormData({
+        nombre: '',
+        apellidos: '',
+        departamento: 'informatica',
+        usuario: '',
+        password: ''
+      });
+
+
     } catch (error) {
       // Manejar errores de la solicitud al servidor
-      console.error('Error al enviar datos al servidor:', error.message);
+      console.log('El nombre de usuario ya existe.');
     }
   };
 

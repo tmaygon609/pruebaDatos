@@ -23,16 +23,17 @@ app.post('/usuario', (req, res) => {
     // Comprobar si el usuario ya existe
     const checkUsuarioSql = 'SELECT * FROM usuarios WHERE usuario = ?';
 
-    db.query(checkUsuarioSql, usuario, (checkErr, checkResult) => {
+    db.query(checkUsuarioSql, [usuario], (checkErr, checkResult) => {
 
         if (checkErr) {
             console.log('Error en la consulta SQL: ' + checkErr.message);
             res.status(500).json({ error: 'Error interno del servidor' });
         } else {
 
-            if (checkResult.lenght > 0) {
+            if (checkResult.length > 0) {
                 // El usuario ya existe
-                res.status(409).json({ error: 'El usuario ya existe' });
+                console.log('El usuario ya existe:', checkResult[0]);
+                res.status(409).json({ error: 'El usuario ya existe', usuarioExistente: checkResult[0] });
             } else {
                 // El usuario no existe.
                 const insertarUsuarioSql = 'INSERT INTO usuarios (nombre, apellidos, departamento, usuario, password) VALUES (?, ?, ?, ?, ?)'
