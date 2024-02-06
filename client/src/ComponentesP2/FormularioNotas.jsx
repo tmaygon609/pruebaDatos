@@ -1,9 +1,57 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function FormularioNotas() {
+    // Función para enviar la nueva nota al servidor
+    const enviarNotaAlServidor = async (nuevaNota) => {
+        try {
+            const response = await axios.post('http://localhost:3001/notas', nuevaNota);
+            console.log('Respuesta del servidor:', response.data);
+        } catch (error) {
+            console.error('Error al enviar la nota al servidor:', error);
+        }
+    };
+// Función para enviar la solicitud de cálculo al servidor
+const enviarSolicitudCalculoAlServidor = async (idAlumno, idTrimestre) => {
+    try {
+        const response = await axios.get(`http://localhost:3001/notas/${idAlumno}/${idTrimestre}`);
+        console.log('Respuesta del servidor:', response.data);
+        calcularNotaMedia(response.data); // Calcular la nota media con la respuesta del servidor
+    } catch (error) {
+        console.error('Error al enviar la solicitud de cálculo al servidor:', error);
+    }
+};
 
-    //Declaración de estado para el componente funcional form
-    //Crea oun objeto de estado y una función para actualizar ese estado
+
+    // Función para calcular la nota media del alumno
+    const calcularNotaMedia = (notas) => {
+        // Sumar todas las notas
+        const sumaNotas = notas.reduce((total, nota) => total + nota.nota, 0);
+
+        // Calcular la nota media
+        const notaMedia = sumaNotas / notas.length;
+
+        alert(`La nota media del alumno es: ${notaMedia}`);
+        // Lógica adicional aquí, como mostrar la nota media en la interfaz de usuario, etc.
+    };
+    
+    // Función para cargar los alumnos en los select
+    const [alumnos, setAlumnos] = useState([]);
+
+    const cargarAlumnos = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/notasAlumnos');
+            setAlumnos(response.data);
+        } catch (error) {
+            console.error('Error al cargar los alumnos:', error);
+        }
+    };
+
+    useEffect(() => {
+        cargarAlumnos();
+    }, []);
+
+    // Declaración de estado para el componente funcional form
     const [form, setForm] = useState({
         alumno: '',
         descripcion: '',
@@ -17,10 +65,8 @@ function FormularioNotas() {
         trimestre_calc: '',
     });
 
-    //Declaración de estado para el componente funcional form
-    //Crea oun objeto de estado y una función para actualizar ese estado
-    const [errors, setErrors] = useState({ //Crea un estado llamado "errors" y una funcion "setErrors" para actualizar ese estado
-        alumno: '', //El estado "errors" es un objeto que se utiliza para almacenar los errores y que se inicializa vacío
+    const [errors, setErrors] = useState({
+        alumno: '',
         descripcion: '',
         trimestre: '',
         tarea: '',
@@ -32,15 +78,10 @@ function FormularioNotas() {
         trimestre_calc: '',
     });
 
-    //Crea un estado llamado "notas" y una funcion "setNotas" para actualizar ese estado
-    //El estado "notas" es un array que se utilixa para almacenar las notas y que se inicializa vacío
-    const [notas, setNotas] = useState([]);
-
-    //Manejador de evento que se ejecuta cada vez que se actualiza el valor de algún campo del formulario
     const handleChange = (event) => {
         setForm({
-            ...form, //Copia el contenido del estado "form"
-            [event.target.name]: event.target.value, //Actualiza el valor del campo que ha cambiado
+            ...form,
+            [event.target.name]: event.target.value,
         });
     };
 
@@ -51,46 +92,76 @@ function FormularioNotas() {
         });
     };
 
-    //Manejador de evento que se ejecuta cuando se envía el formulario
-    //Añade una nueva nota al array de notas
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        if (validateForm()) { //Valida el formulario
-            const nuevaNota = { //Crea un objeto con los datos del formulario
+        if (validateForm()) {
+            const nuevaNota = {
                 alumno: form.alumno,
+                descripcion: form.descripcion,
                 trimestre: form.trimestre,
+                tarea: form.tarea,
                 nota: parseFloat(form.nota),
             };
             
-            setNotas([...notas, nuevaNota]); //Añade la nueva nota al array de notas
-            setForm({ //Resetea el formulario
-                alumno: '',
-                descripcion: '',
-                trimestre: '',
-                tarea: '',
-                nota: '',
-            });
-            alert("Nota introducida correctamente");
+            try {
+                await enviarNotaAlServidor(nuevaNota);
+                alert('Nota agregada exitosamente');
+                resetForm();
+            } catch (error) {
+                console.error('Error al enviar la nota al servidor:', error);
+            }
         }
     };
 
-    //Manejador de evento que se ejecuta cuando se envía el formulario
-    //Calcula la nota media de un alumno en un trimestre
-    const handleSubmit2 = (event) => {
-        event.preventDefault(); //Evita que se recargue la página
-        if (validateForm2()) { //Valida el formulario
-            const notaMedia = calcularNotaMedia(form2.alumno_calc, form2.trimestre_calc); //Calcula la nota media
-            alert(notaMedia);
+    const handleSubmit2 = async (event) => {
+        event.preventDefault();
+        if (validateForm2()) {
+
+            const idAlumno = form2.alumno_calc;
+            const idTrimestre = form2.trimestre_calc;
+            
+            try {
+                await enviarSolicitudCalculoAlServidor(idAlumno, idTrimestre);
+                resetForm2();
+            } catch (error) {
+                console.error('Error al enviar la nota al servidor:', error);
+            }
         }
     };
 
-    //Valida el formulario
+    // const handleSubmit2 = async (event) => {
+    //     event.preventDefault();
+    //     if (validateForm2()) {
+    //         try {
+    //             // Obtener los valores del formulario
+    //             const idAlumno = form2.alumno_calc;
+    //             const idTrimestre = form2.trimestre_calc;
+    
+    //             // Realizar la solicitud GET incluyendo los parámetros en la URL
+    //             const response = await axios.get(`http://localhost:3001/notas/${idAlumno}/${idTrimestre}`);
+    //             console.log('Respuesta del servidor:', response.data);
+    //             // Alerta con los datos obtenidos del servidor
+    //             alert(JSON.stringify(response.data));
+    
+    //             // Llamar a la función para enviar la solicitud de cálculo al servidor
+    //             enviarSolicitudCalculoAlServidor(idAlumno, idTrimestre);
+    
+    //             // Llamar a la función para resetear el formulario
+    //             resetForm2();
+    
+    //             // También puedes realizar otras acciones aquí, como mostrar una alerta o redirigir al usuario
+    //         } catch (error) {
+    //             console.error('Error al enviar la solicitud de cálculo al servidor:', error);
+    //         }
+    //     }
+    // };
+
     const validateForm = () => {
         let isValid = true;
         let newErrors = { ...errors };
 
         if (form.alumno.trim() === '') {
-            newErrors.alumno = 'Seleccione un aluno/a';
+            newErrors.alumno = 'Seleccione un alumno/a';
             isValid = false;
         } else {
             newErrors.alumno = '';
@@ -124,17 +195,16 @@ function FormularioNotas() {
             newErrors.nota = '';
         }
 
-        setErrors(newErrors); //Actualiza el estado "errors"
+        setErrors(newErrors);
         return isValid;
     };
 
-    //Valida el formulario
     const validateForm2 = () => {
         let isValid = true;
         let newErrors = { ...errors2 };
 
         if (form2.alumno_calc.trim() === '') {
-            newErrors.alumno_calc = 'Seleccione un aluno/a';
+            newErrors.alumno_calc = 'Seleccione un alumno/a';
             isValid = false;
         } else {
             newErrors.alumno_calc = '';
@@ -147,25 +217,32 @@ function FormularioNotas() {
             newErrors.trimestre_calc = '';
         }
 
-        setErrors2(newErrors); //Actualiza el estado "errors"
+        setErrors2(newErrors);
         return isValid;
     };
 
-    //Calcula la nota media de un alumno en un trimestre
-    const calcularNotaMedia = (alumno, trimestre) => {
-        const notasAlumnoTrimestre = notas.filter( //Filtra las notas del alumno y trimestre seleccionados
-            (nota) => nota.alumno === alumno && nota.trimestre === trimestre //Devuelve true si la nota cumple la condición
-        );
-    
-        if (notasAlumnoTrimestre.length === 0) {
-            return "No hay notas para el alumno y trimestre seleccionados.";
-        }
-    
-        
-        const sumaNotas = notasAlumnoTrimestre.reduce((total, nota) => total + nota.nota, 0); //Suma las notas del alumno y trimestre seleccionados
-        const notaMedia = sumaNotas / notasAlumnoTrimestre.length; //Calcula la nota media
-    
-        return `Nota media del trimestre ${trimestre} para ${alumno}: ${notaMedia.toFixed(2)}`; //Devuelve la nota media y con toFixed(2) se limita a dos decimales
+    const resetForm = () => {
+        setForm({
+            alumno: '',
+            descripcion: '',
+            trimestre: '',
+            tarea: '',
+            nota: '',
+        });
+        setErrors({
+            alumno: '',
+            descripcion: '',
+            trimestre: '',
+            tarea: '',
+            nota: '',
+        });
+    };
+
+    const resetForm2 = () => {
+        setForm2({
+            alumno_calc: '',
+            trimestre_calc: ''
+        });
     };
 
     return (
@@ -178,7 +255,6 @@ function FormularioNotas() {
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Alumno</label>
-
                             <select
                                 name="alumno"
                                 value={form.alumno}
@@ -186,18 +262,14 @@ function FormularioNotas() {
                                 className="form-select"
                             >
                                 <option value="" disabled defaultValue>Selecciona un alumno</option>
-                                <option value="alicia">Alicia</option>
-                                <option value="adrian">Adrián</option>
-                                <option value="carmen">Carmen</option>
-                                <option value="joseantonio">José Antonio</option>
-                                <option value="pablo">Pablo</option>
-                                <option value="tibu">Tibu</option>
+                                {alumnos.map((alumno) => (
+                                    <option key={alumno.id} value={alumno.id}>{alumno.nombre} {alumno.apellidos}</option>
+                                ))}
                             </select>
                             {errors.alumno && <span>{errors.alumno}</span>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="descripcion" className="form-label">Descripción</label>
-
                             <input
                                 placeholder='Escriba una descripción'
                                 type="text"
@@ -210,7 +282,6 @@ function FormularioNotas() {
                         </div>
                         <div className="mb-3">
                             <label htmlFor="trimestre" className="form-label">Trimestre</label>
-
                             <select
                                 name="trimestre"
                                 value={form.trimestre}
@@ -218,15 +289,14 @@ function FormularioNotas() {
                                 className="form-select"
                             >
                                 <option value="" disabled defaultValue>Selecciona un trimestre</option>
-                                <option value="primero">Primer Trimestre</option>
-                                <option value="segundo">Segundo Trimestre</option>
-                                <option value="tercero">Tercer Trimestre</option>
+                                <option value="1">Primer Trimestre</option>
+                                <option value="2">Segundo Trimestre</option>
+                                <option value="3">Tercer Trimestre</option>
                             </select>
                             {errors.trimestre && <span>{errors.trimestre}</span>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="tarea" className="form-label">Tarea</label>
-
                             <select
                                 name="tarea"
                                 value={form.tarea}
@@ -234,17 +304,16 @@ function FormularioNotas() {
                                 className="form-select"
                             >
                                 <option value="" disabled defaultValue>Selecciona una tarea</option>
-                                <option value="p_ind">Práctica individual</option>
-                                <option value="p_grup">Práctica grupal</option>
-                                <option value="ex_teor">Examen teórico</option>
-                                <option value="ex_pract">Examen práctico</option>
-                                <option value="expo">Exposición</option>
+                                <option value="1">Práctica individual</option>
+                                <option value="2">Práctica grupal</option>
+                                <option value="3">Examen teórico</option>
+                                <option value="4">Examen práctico</option>
+                                <option value="5">Exposición</option>
                             </select>
                             {errors.tarea && <span>{errors.tarea}</span>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="nota" className="form-label">Nota</label>
-
                             <input
                                 type="number"
                                 name="nota"
@@ -261,14 +330,13 @@ function FormularioNotas() {
                             <button type="submit" className="btn btn-primary">Añadir</button>
                         </div>
                     </form>
-                    <br/>
+                    <br />
                     <form onSubmit={handleSubmit2}>
-                    <div className="mb-3">
+                        <div className="mb-3">
                             <h1>Calcular nota</h1>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="alumno" className="form-label">Alumno</label>
-
                             <select
                                 name="alumno_calc"
                                 value={form2.alumno_calc}
@@ -276,18 +344,14 @@ function FormularioNotas() {
                                 className="form-select"
                             >
                                 <option value="" disabled selected>Selecciona un alumno</option>
-                                <option value="alicia">Alicia</option>
-                                <option value="adrian">Adrián</option>
-                                <option value="carmen">Carmen</option>
-                                <option value="joseantonio">José Antonio</option>
-                                <option value="pablo">Pablo</option>
-                                <option value="tibu">Tibu</option>
+                                {alumnos.map((alumno) => (
+                                    <option key={alumno.id} value={alumno.id}>{alumno.nombre} {alumno.apellidos}</option>
+                                ))}
                             </select>
                             {errors2.alumno_calc && <span>{errors2.alumno_calc}</span>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="trimestre" className="form-label">Trimestre</label>
-
                             <select
                                 name="trimestre_calc"
                                 value={form2.trimestre_calc}
@@ -295,9 +359,9 @@ function FormularioNotas() {
                                 className="form-select"
                             >
                                 <option value="" disabled selected>Selecciona un trimestre</option>
-                                <option value="primero">Primer Trimestre</option>
-                                <option value="segundo">Segundo Trimestre</option>
-                                <option value="tercero">Tercer Trimestre</option>
+                                <option value="1">Primer Trimestre</option>
+                                <option value="2">Segundo Trimestre</option>
+                                <option value="3">Tercer Trimestre</option>
                             </select>
                             {errors2.trimestre_calc && <span>{errors2.trimestre_calc}</span>}
                         </div>

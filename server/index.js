@@ -7,7 +7,7 @@ const routeActualizarUsuario = require('./routes/routeActualizarUsuario.js');
  const routeAñadirUsuario = require('./routes/routeAñadirUsuario.js');
 const routeEliminarUsuario = require('./routes/routeEliminarUsuario.js');
 // const routeLoginUsuario = require('./routes/routeLoginUsuario.js');
-// const routeRegistroNotas = require('./routes/routeRegistroNotas.js');
+const routeRegistroNotas = require('./routes/routeRegistroNotas.js');
 //Ya implementado
 const routeRegistroUsuario = require('./routes/routeRegistroUsuario.js');
 
@@ -22,7 +22,7 @@ app.use('/', routeActualizarUsuario);
 app.use('/', routeAñadirUsuario);
 app.use('/', routeEliminarUsuario);
 // app.use('/', routeLoginUsuario);
-// app.use('/', routeRegistroNotas);
+app.use('/', routeRegistroNotas);
 //Ya implementado
 app.use('/', routeRegistroUsuario);
 
