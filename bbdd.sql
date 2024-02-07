@@ -36,3 +36,15 @@ CREATE TABLE notas (
     FOREIGN KEY (idTrimestre) REFERENCES trimestre(id),
     FOREIGN KEY (idTarea) REFERENCES tareas(id)
 );
+
+INSERT INTO trimestre (nombre) VALUES 
+('Primer Trimestre'), 
+('Segundo Trimestre'), 
+('Tercer Trimestre');
+
+INSERT INTO tareas (nombre) VALUES 
+('Práctica individual'), 
+('Práctica grupal'), 
+('Examen teórico'), 
+('Examen práctico'), 
+('Exposicion');
