@@ -30,6 +30,7 @@ function Public() {
                 <Menu />
                 <Routes>
                     <Route path="/" element={<p></p>} />
+                    <Route path="/reactGitPageProyect" eelement={<p></p>} />
                     <Route path="*" element={<NotFound />} />
                     <Route path="/documentacion" element={<div><PDFViewer src={documentacion} /></div>} />
                     <Route path="/presentacion" element={<div><PDFViewer src={presentacion} /></div>} />
