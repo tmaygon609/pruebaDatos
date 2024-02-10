@@ -5,18 +5,19 @@ import axios from 'axios';
 
 //Componente funcional que muestra una tabla con datos de los alumnos y que permite borrarlos
 const Tabla = () => {
-    //Dos estados para guardar los datos de los alumnos y el id de la fila seleccionada
+    //Estados para almacenar los datos de la tabla, la fila seleccionada y los errores
     const [data, setData] = useState([]);
     const [filaSeleccionada, setFilaSeleccionada] = useState(null);
     const [errors, setErrors] = useState({});
 
+    //Hook useEffect para realizar una llamada a la API y obtener los datos de la tabla de alumnos
     useEffect(() => {
-        // Llamada a la API para obtener los datos de la tabla de alumnos
+        //Llamada a la API para obtener los datos de la tabla de alumnos
         axios.get('http://localhost:3001/alumnos', data)
-          .then(response => {
+          .then(response => { //Si la llamada es exitosa, actualiza el estado con los datos obtenidos
             setData(response.data);
           })
-          .catch(error => {
+          .catch(error => { //Si la llamada falla, muestra un mensaje de error en la consola y actualiza el estado con el mensaje de error
             console.error('Error al obtener los datos de los alumnos:', error);
             setErrors({ message: 'Error al obtener los datos de los alumnos' });
           });
@@ -24,42 +25,42 @@ const Tabla = () => {
 
     //Función para establecer el id de la fila seleccionada
     const handleBorrarFila = (id) => {
-        setFilaSeleccionada(id);
+        setFilaSeleccionada(id); //establece el id de la fila seleccionada
     };
 
     //Función para borrar la fila seleccionada haciendo una petición DELETE con axios
     const handleConfirmarBorrado = () => {
         if (filaSeleccionada !== null && filaSeleccionada !== undefined) {
-            // Realiza una solicitud DELETE al servidor para eliminar el alumno
+            //solicitud DELETE al servidor para eliminar el alumno
             axios.delete(`http://localhost:3001/eliminar/${filaSeleccionada}`)
-              .then(response => {
-                console.log('Alumno eliminado correctamente:', response.data);
-                // Actualiza el estado para reflejar la eliminación
+              .then(response => { //Si la llamada es exitosa, muestra un mensaje de éxito en la consola
+                console.log('Alumno eliminado correctamente:', response.data); //
+                //actualiza el estado para reflejar la eliminación
                 setData(data.filter(item => item.id !== filaSeleccionada));
-                // Después de eliminar, deselecciona la fila
+                //después de eliminar, deselecciona la fila
                 setFilaSeleccionada(null);
               })
-              .catch(error => {
+              .catch(error => { //Si la llamada falla, muestra un mensaje de error en la consola
                 console.error('Error al eliminar el alumno:', error);
               });
-        } else {
-            console.error('No se seleccionó ninguna fila para eliminar');
+        } else { //Si no hay ninguna fila seleccionada, muestra un mensaje de error en la consola
+            console.error('No se seleccionó ninguna fila para eliminar'); //
         }
     };
 
     //Función para cerrar el modal y deseleccionar la fila
     const handleCerrarModal = () => {
-        setFilaSeleccionada(null);
+        setFilaSeleccionada(null); //deselecciona la fila
     };
 
     //Función que obtiene los datos de la fila seleccionada
     const getfilaSeleccionadaDatos = () => {
-        const filaSeleccionadaDatos = data.find((item) => item.id === filaSeleccionada);
-        return filaSeleccionadaDatos;
+        const filaSeleccionadaDatos = data.find((item) => item.id === filaSeleccionada); //busca la fila seleccionada en el array de datos
+        return filaSeleccionadaDatos; //devuelve los datos de la fila seleccionada
     };
 
     //Obtener los datos de la fila seleccionada para borrar
-    const filaSeleccionadaDatos = getfilaSeleccionadaDatos();
+    const filaSeleccionadaDatos = getfilaSeleccionadaDatos(); //llama a la función getfilaSeleccionadaDatos para obtener los datos de la fila seleccionada
 
     //Tabla y modal para mostrar los datos de los alumnos y permitir borrarlos
     return (
